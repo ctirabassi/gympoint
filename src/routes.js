@@ -5,10 +5,15 @@ import authMiddlaware from './app/middlewares/auth';
 import StudentController from './app/controllers/StudentController';
 import PlanController from './app/controllers/PlanController';
 import EnrollmentController from './app/controllers/EnrollmentController';
+import CheckinController from './app/controllers/CheckinController';
 
 const routes = new Router();
 
 routes.post('/session', SessionController.store);
+
+// Check-in
+routes.get('/students/:id/checkin', CheckinController.index);
+routes.post('/students/:id/checkin', CheckinController.store);
 
 routes.use(authMiddlaware);
 
