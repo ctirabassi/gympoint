@@ -6,4 +6,4 @@
 
 ## Introdução
 
-Esse aplicação foi desenvolvida como desafio do treinamento da Rocketseat
+Essa aplicação foi desenvolvida como desafio do treinamento da Rocketseat
