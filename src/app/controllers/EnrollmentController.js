@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
-import { addMonths, parseISO } from 'date-fns';
+import { addMonths, parseISO, endOfDay } from 'date-fns';
+import { Op } from 'sequelize';
 import Enrollment from '../models/Enrollment';
 import Plan from '../models/Plan';
 import Student from '../models/Student';
@@ -49,14 +50,14 @@ class EnrollmentController {
     if (!(await schema.isValid(req.body)))
       return res.status(400).json({ error: 'Validation failed' });
 
-    const enrollmentExists = await Enrollment.findOne({
-      where: {
-        student_id: req.body.student_id,
-      },
-    });
-
     const { student_id, plan_id, start_date } = req.body;
 
+    const enrollmentExists = await Enrollment.findOne({
+      where: {
+        student_id,
+        end_date: { [Op.gte]: endOfDay(new Date()) },
+      },
+    });
     if (enrollmentExists)
       return res
         .status(400)
@@ -108,7 +109,7 @@ class EnrollmentController {
     enrollment.price = plan.price * plan.duration;
     enrollment.end_date = addMonths(parseISO(start_date), plan.duration);
 
-    enrollment.save();
+    await enrollment.save();
 
     return res.json(enrollment);
   }
